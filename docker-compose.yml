@@ -1,5 +1,31 @@
 version: "3.2"
 services:
+  orchestrator:
+    container_name: orchestrator
+    build: 
+      context: .
+      dockerfile: dockerfiles/orchestrator.Dockerfile
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  publisher:
+    container_name: publisher
+    build: 
+      context: .
+      dockerfile: dockerfiles/publisher.Dockerfile
+    network_mode: host
+    restart: unless-stopped
+
+  consumer:
+    container_name: consumer
+    build: 
+      context: .
+      dockerfile: dockerfiles/consumer.Dockerfile
+    network_mode: host
+    restart: unless-stopped
+
   rabbitmq:
     container_name: 'rabbitmq'
     build: 
@@ -9,3 +35,18 @@ services:
     volumes:
         - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
         - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+
+  influxdb:
+    container_name: influxdb
+    build: 
+      context: .
+      dockerfile: dockerfiles/influxdb.Dockerfile
+    network_mode: host
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=username
+      - DOCKER_INFLUXDB_INIT_PASSWORD=p455w0rd
+      - DOCKER_INFLUXDB_INIT_ORG=poc
+      - DOCKER_INFLUXDB_INIT_BUCKET=eeg
+      - DOCKER_INFLUXDB_INIT_RETENTION=1w
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=SUPERTOKEN!

@@ -1,0 +1,11 @@
+version: "3.2"
+services:
+  rabbitmq:
+    container_name: 'rabbitmq'
+    build: 
+      context: .
+      dockerfile: dockerfiles/rabbitmq.Dockerfile
+    network_mode: host
+    volumes:
+        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+        - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
